@@ -1,11 +1,13 @@
 package ru.practicum.model;
 
-public class TimeOfDay {
+import java.util.Objects;
+
+public class TimeOfDay implements Comparable<TimeOfDay> {
 
     //часы (от 0 до 23)
-    private int hours;
+    private final int hours;
     //минуты (от 0 до 59)
-    private int minutes;
+    private final int minutes;
 
     public TimeOfDay(int hours, int minutes) {
         this.hours = hours;
@@ -18,5 +20,23 @@ public class TimeOfDay {
 
     public int getMinutes() {
         return minutes;
+    }
+
+    @Override
+    public int compareTo(TimeOfDay other) {
+        var thisTotalMinutes = this.getHours() * 60 + this.getMinutes();
+        var otherTotalMinutes = other.getHours() * 60 + other.getMinutes();
+        return thisTotalMinutes - otherTotalMinutes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof TimeOfDay timeOfDay)) return false;
+        return getHours() == timeOfDay.getHours() && getMinutes() == timeOfDay.getMinutes();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getHours(), getMinutes());
     }
 }

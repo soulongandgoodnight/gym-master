@@ -1,5 +1,7 @@
 package ru.practicum.model;
 
+import ru.practicum.helper.CounterOfTrainings;
+
 import java.util.*;
 
 public class Timetable {
@@ -35,12 +37,6 @@ public class Timetable {
         sessionsOfDayAndTime.add(trainingSession);
     }
 
-    private boolean TimeIsValid(TimeOfDay timeOfDay) {
-        var hours = timeOfDay.getHours();
-        var minutes = timeOfDay.getMinutes();
-        return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
-    }
-
     public SortedMap<TimeOfDay, ArrayList<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
         return timetable.get(dayOfWeek);
     }
@@ -48,5 +44,33 @@ public class Timetable {
     public ArrayList<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         var trainingSessionsByDay = timetable.get(dayOfWeek);
         return trainingSessionsByDay.getOrDefault(timeOfDay, new ArrayList<>());
+    }
+
+    public Collection<CounterOfTrainings> getCountByCoaches(){
+        var sessionsCountByCoaches = new HashMap<Coach, Integer>();
+        for (var sessionByDay: timetable.values()) {
+            for (var sessionsByTime: sessionByDay.values()) {
+                for (TrainingSession sessionByTime : sessionsByTime) {
+                    var coach = sessionByTime.getCoach();
+                    var sessionsCount = sessionsCountByCoaches.getOrDefault(coach, 0);
+                    sessionsCount++;
+                    sessionsCountByCoaches.put(coach, sessionsCount);
+                }
+            }
+        }
+
+        List<CounterOfTrainings> list = new ArrayList<>();
+        for (Map.Entry<Coach, Integer> entry : sessionsCountByCoaches.entrySet()) {
+            CounterOfTrainings counterOfTrainings = new CounterOfTrainings(entry.getKey(), entry.getValue());
+            list.add(counterOfTrainings);
+        }
+        list.sort(null);
+        return list;
+    }
+
+    private boolean TimeIsValid(TimeOfDay timeOfDay) {
+        var hours = timeOfDay.getHours();
+        var minutes = timeOfDay.getMinutes();
+        return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
     }
 }

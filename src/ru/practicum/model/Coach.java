@@ -1,13 +1,15 @@
 package ru.practicum.model;
 
+import java.util.Objects;
+
 public class Coach {
 
     //фамилия
-    private String surname;
+    private final String surname;
     //имя
-    private String name;
+    private final String name;
     //отчество
-    private String middleName;
+    private final String middleName;
 
     public Coach(String surname, String name, String middleName) {
         this.surname = surname;
@@ -25,5 +27,16 @@ public class Coach {
 
     public String getMiddleName() {
         return middleName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Coach coach)) return false;
+        return Objects.equals(getSurname(), coach.getSurname()) && Objects.equals(getName(), coach.getName()) && Objects.equals(getMiddleName(), coach.getMiddleName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSurname(), getName(), getMiddleName());
     }
 }

@@ -19,7 +19,7 @@ public class Timetable {
     public void addNewTrainingSession(TrainingSession trainingSession) {
         var dayOfWeek = trainingSession.getDayOfWeek();
         var timeOfDay = trainingSession.getTimeOfDay();
-        if (!TimeIsValid(timeOfDay)) {
+        if (!timeIsValid(timeOfDay)) {
             return;
         }
 
@@ -28,7 +28,7 @@ public class Timetable {
         }
 
         var sessionsOfDay = timetable.get(dayOfWeek);
-        var sessionsOfDayAndTime = sessionsOfDay.getOrDefault(timeOfDay, null);
+        var sessionsOfDayAndTime = sessionsOfDay.get(timeOfDay);
         if (sessionsOfDayAndTime == null) {
             sessionsOfDayAndTime = new ArrayList<>();
             sessionsOfDay.put(timeOfDay, sessionsOfDayAndTime);
@@ -64,11 +64,12 @@ public class Timetable {
             CounterOfTrainings counterOfTrainings = new CounterOfTrainings(entry.getKey(), entry.getValue());
             list.add(counterOfTrainings);
         }
-        list.sort(null);
+
+        Collections.sort(list);
         return list;
     }
 
-    private boolean TimeIsValid(TimeOfDay timeOfDay) {
+    private boolean timeIsValid(TimeOfDay timeOfDay) {
         var hours = timeOfDay.getHours();
         var minutes = timeOfDay.getMinutes();
         return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
